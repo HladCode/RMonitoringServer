@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/HladCode/RMonitoringServer/internal/config"
+	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/sensor/getPage"
 	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/sensor/post"
 	"github.com/HladCode/RMonitoringServer/internal/http-server/middleware/logger"
 	"github.com/HladCode/RMonitoringServer/internal/lib/logger/sl"
@@ -48,6 +49,7 @@ func main() {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 	router.Post("/", post.New(log))
+	router.Get("/idi", getPage.New(log, "/home/sergey/Projects/RMonitoringServer/internal/http-server/handlers/sensor/getPage/page/"))
 
 	//	router.Get("/{alias}", rediect.New(log, storage))
 
