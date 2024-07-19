@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// https://stackoverflow.com/questions/11706215/how-can-i-fix-the-git-error-object-file-is-empty
 func main() {
 	dataStorage := storageforprometheus.NewStorage(7)
 
@@ -19,6 +20,7 @@ func main() {
 	router.HandleFunc("/data", getData.New(dataStorage)).Methods("POST")
 	router.HandleFunc("/metrics", exportMetrics.New(dataStorage)).Methods("GET")
 
+	//TODO: make normal log
 	log.Println("Start Listening...")
 	log.Fatal(http.ListenAndServe("192.168.0.103:1488", router))
 }
