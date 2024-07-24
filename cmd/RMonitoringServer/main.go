@@ -1,9 +1,11 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 
+	"github.com/HladCode/RMonitoringServer/internal/config"
 	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/exportMetrics"
 	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/getData"
 	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/isConnectionGood"
@@ -13,6 +15,25 @@ import (
 
 // https://stackoverflow.com/questions/11706215/how-can-i-fix-the-git-error-object-file-is-empty
 func main() {
+	ConfigPath := flag.String(
+		"ConfigPath",
+		"",
+		"",
+	)
+
+	flag.Parse()
+
+	switch *ConfigPath {
+	case "":
+		log.Fatal("ConfigPath is not specified")
+	case ".":
+		*ConfigPath = "configs/prod.json"
+	case "..":
+		*ConfigPath = "configs/local.json"
+	}
+
+	conf := config.MustRead(*ConfigPath)
+
 	dataStorage := storageforprometheus.NewStorage(7)
 
 	router := mux.NewRouter().StrictSlash(true)
@@ -22,5 +43,5 @@ func main() {
 
 	//TODO: make normal log
 	log.Println("Start Listening...")
-	log.Fatal(http.ListenAndServe("192.168.0.103:1488", router))
+	log.Fatal(http.ListenAndServe(conf.Host+":"+conf.Port, router))
 }
