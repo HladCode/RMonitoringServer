@@ -6,16 +6,15 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 	"sync"
-	"time"
 
 	re "github.com/HladCode/RMonitoringServer/internal/lib/api/response"
 )
 
 type Request struct {
-	Temperature string `json:"t"`
-	Path        string `json:"p"`
+	Temperature string `json:"tempreature"`
+	PhoneNumber string `json:"phone_number"`
+	ObjectName  string `json:"object_name"`
 
 	//for this arduino must have RTC module
 	// time        string `json:"time"`
@@ -49,11 +48,11 @@ func New(saver DataSaver) http.HandlerFunc {
 		}
 
 		//log.Println(dat.Tempreature, "°C", ", ", dat.Path)
-		t, _ := strconv.ParseFloat(dat.Temperature, 32)
+		//t, _ := strconv.ParseFloat(dat.Temperature, 32)
 		var mu sync.Mutex
 
 		mu.Lock()
-		saver.SaveTemperature(time.Now().Format("2006-01-02 15:04:05"), dat.Path, t)
+		//saver.SaveTemperature(time.Now().Format("2006-01-02 15:04:05"), dat.Path, t)
 		mu.Unlock()
 		fmt.Fprintf(w, re.ArduinoOk().Status)
 	}

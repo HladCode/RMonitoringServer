@@ -6,10 +6,9 @@ import (
 	"net/http"
 
 	"github.com/HladCode/RMonitoringServer/internal/config"
-	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/exportMetrics"
-	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/getData"
 	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/isConnectionGood"
-	storageforprometheus "github.com/HladCode/RMonitoringServer/internal/storage/storageForPrometheus"
+
+	//storageforprometheus "github.com/HladCode/RMonitoringServer/internal/storage/storageForPrometheus"
 	"github.com/gorilla/mux"
 )
 
@@ -34,12 +33,12 @@ func main() {
 
 	conf := config.MustRead(*ConfigPath)
 
-	dataStorage := storageforprometheus.NewStorage(7)
+	//dataStorage := storageforprometheus.NewStorage(7)
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", isConnectionGood.New()).Methods("GET")
-	router.HandleFunc("/data", getData.New(dataStorage)).Methods("POST")
-	router.HandleFunc("/metrics", exportMetrics.New(dataStorage)).Methods("GET")
+	// router.HandleFunc("/data", getData.New(dataStorage)).Methods("POST")
+	// router.HandleFunc("/metrics", exportMetrics.New(dataStorage)).Methods("GET")
 
 	//TODO: make normal log
 	log.Println("Start Listening...")

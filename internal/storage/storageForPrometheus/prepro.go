@@ -11,6 +11,7 @@ type promStorage struct {
 	buf               map[string]*list.List
 }
 
+// TODO: delete maxDataCountInBuf
 func NewStorage(maxDataCountInBuf int) promStorage {
 	return promStorage{
 		maxDataCountInBuf: maxDataCountInBuf,
