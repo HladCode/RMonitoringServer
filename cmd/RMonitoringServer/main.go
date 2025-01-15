@@ -8,6 +8,7 @@ import (
 	"github.com/HladCode/RMonitoringServer/internal/config"
 	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/exportMetrics"
 	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/getData"
+	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/getTime"
 	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/isConnectionGood"
 
 	"github.com/HladCode/RMonitoringServer/internal/storage/prometheusRespStorage"
@@ -41,6 +42,7 @@ func main() {
 	router.HandleFunc("/", isConnectionGood.New()).Methods("GET")
 	router.HandleFunc("/data", getData.New(dataBuffer)).Methods("POST")
 	router.HandleFunc("/metrics", exportMetrics.New(dataBuffer)).Methods("GET")
+	router.HandleFunc("/time", getTime.New()).Methods("Get")
 
 	//TODO: make normal log
 	log.Println("Start Listening...")
