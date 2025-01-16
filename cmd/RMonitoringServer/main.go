@@ -6,12 +6,11 @@ import (
 	"net/http"
 
 	"github.com/HladCode/RMonitoringServer/internal/config"
-	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/exportMetrics"
 	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/getData"
 	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/getTime"
 	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/isConnectionGood"
+	"github.com/HladCode/RMonitoringServer/internal/storage/simpleStorage"
 
-	"github.com/HladCode/RMonitoringServer/internal/storage/prometheusRespStorage"
 	"github.com/gorilla/mux"
 )
 
@@ -36,12 +35,12 @@ func main() {
 
 	conf := config.MustRead(*ConfigPath)
 
-	dataBuffer := prometheusRespStorage.NewStorage()
+	dataSaver := simpleStorage.NewStorage()
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", isConnectionGood.New()).Methods("GET")
-	router.HandleFunc("/data", getData.New(dataBuffer)).Methods("POST")
-	router.HandleFunc("/metrics", exportMetrics.New(dataBuffer)).Methods("GET")
+	router.HandleFunc("/data", getData.New(dataSaver)).Methods("POST")
+	//router.HandleFunc("/metrics", exportMetrics.New(dataBuffer)).Methods("GET")
 	router.HandleFunc("/time", getTime.New()).Methods("Get")
 
 	//TODO: make normal log

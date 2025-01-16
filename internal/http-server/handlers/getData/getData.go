@@ -6,20 +6,20 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 
 	re "github.com/HladCode/RMonitoringServer/internal/lib/api/response"
 )
 
 type Request struct {
-	Timestamp   string `json:"timestamp"`
-	ObjectName  string `json:"object_name"`
-	PhoneNumber string `json:"phone_number"`
-	Temperature string `json:"tempreature"`
+	ID              string  `json:"id"`
+	Purpose         string  `json:"p"`
+	SensorPinNumber string  `json:"n"` // TODO: in esp32 code change n in request json
+	Timestamp       string  `json:"t"`
+	SensorValue     float64 `json:"v"`
 }
 
 type DataSaver interface {
-	SaveTemperature(timestamp, phoneNumber, refrigeratorPath string, temp float64) error
+	SaveData(ID, Purpose, SensorPinNumber, Timestamp string, data float64) error
 }
 
 func New(saver DataSaver) http.HandlerFunc {
@@ -41,9 +41,9 @@ func New(saver DataSaver) http.HandlerFunc {
 		}
 
 		//log.Println(dat.Tempreature, "°C", ", ", dat.Path)
-		t, _ := strconv.ParseFloat(dat.Temperature, 32)
+		//t, _ := strconv.ParseFloat(dat.Temperature, 32)
 
-		if err = saver.SaveTemperature(dat.Timestamp, dat.PhoneNumber, dat.ObjectName, t); err != nil {
+		if err = saver.SaveData(dat.ID, dat.Purpose, dat.SensorPinNumber, dat.Timestamp, dat.SensorValue); err != nil {
 			log.Println(err.Error())
 		}
 

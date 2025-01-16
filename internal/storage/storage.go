@@ -1,8 +1,8 @@
 package storage
 
 type Storage interface {
-	SaveTemperature(timestamp, phoneNumber, refrigeratorPath string, temp float64) error
-	GetTempreature() string
+	SaveTemperature(ID, Purpose, SensorPinNumber, Timestamp string, data float64) error
+	GetTempreature(ID, Purpose, SensorPinNumber, data string) string
 }
 
 // type ObjectData struct {
