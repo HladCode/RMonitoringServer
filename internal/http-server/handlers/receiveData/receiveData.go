@@ -1,4 +1,4 @@
-package getData
+package receivedata
 
 import (
 	"encoding/json"
@@ -8,23 +8,19 @@ import (
 	"net/http"
 
 	re "github.com/HladCode/RMonitoringServer/internal/lib/api/response"
+	"github.com/HladCode/RMonitoringServer/internal/storage"
 )
 
-type Request struct {
-	ID              string  `json:"id"`
-	Purpose         string  `json:"p"`
-	SensorPinNumber string  `json:"n"` // TODO: in esp32 code change n in request json
-	Timestamp       string  `json:"t"`
-	SensorValue     float64 `json:"v"`
+type DataSaver interface {
+	AddNewData(readings []storage.Data_unit) error
 }
 
-type DataSaver interface {
-	SaveData(ID, Purpose, SensorPinNumber, Timestamp string, data float64) error
+type Request struct {
+	AllCurrentData []storage.Data_unit `json:"AllCurrentData"`
 }
 
 func New(saver DataSaver) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		//TODO: make normal log
 		log.Println("New request: ", r.RequestURI)
 		reqBody, err := io.ReadAll(r.Body)
 		if err != nil {
@@ -32,6 +28,7 @@ func New(saver DataSaver) http.HandlerFunc {
 			fmt.Fprintf(w, "Error")
 			return
 		}
+
 		var dat Request
 		err = json.Unmarshal(reqBody, &dat)
 		if err != nil {
@@ -40,10 +37,7 @@ func New(saver DataSaver) http.HandlerFunc {
 			return
 		}
 
-		//log.Println(dat.Tempreature, "°C", ", ", dat.Path)
-		//t, _ := strconv.ParseFloat(dat.Temperature, 32)
-
-		if err = saver.SaveData(dat.ID, dat.Purpose, dat.SensorPinNumber, dat.Timestamp, dat.SensorValue); err != nil {
+		if err = saver.AddNewData(dat.AllCurrentData); err != nil {
 			log.Println(err.Error())
 		}
 

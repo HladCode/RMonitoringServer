@@ -6,10 +6,12 @@ import (
 	"net/http"
 
 	"github.com/HladCode/RMonitoringServer/internal/config"
-	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/getData"
+	_ "github.com/HladCode/RMonitoringServer/internal/http-server/handlers/getData_old" // getData
 	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/getTime"
 	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/isConnectionGood"
-	"github.com/HladCode/RMonitoringServer/internal/storage/simpleStorage"
+	receivedata "github.com/HladCode/RMonitoringServer/internal/http-server/handlers/receiveData"
+	senddatafromday "github.com/HladCode/RMonitoringServer/internal/http-server/handlers/sendDataFromDay"
+	DB "github.com/HladCode/RMonitoringServer/internal/storage/timeScaleDB"
 
 	"github.com/gorilla/mux"
 )
@@ -35,15 +37,37 @@ func main() {
 
 	conf := config.MustRead(*ConfigPath)
 
-	dataSaver := simpleStorage.NewStorage()
+	db, err := DB.NewDatabase(conf.BD_connect_parametrs)
+	if err != nil {
+		log.Fatal("Can not make a db: ", err)
+	}
+	if err := db.InitFromFile("configs/init.sql"); err != nil {
+		log.Fatal("Can not init a db: ", err)
+	}
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", isConnectionGood.New()).Methods("GET")
-	router.HandleFunc("/data", getData.New(dataSaver)).Methods("POST")
+	router.HandleFunc("/time", getTime.New()).Methods("Get")
+	router.HandleFunc("/sendData", receivedata.New(db)).Methods("POST")
+	router.HandleFunc("/getDayData", senddatafromday.New(db)).Methods("Get")
+
+	//TODO: make normal log
+	log.Println("Start Listening...")
+	log.Fatal(http.ListenAndServe(conf.Host+":"+conf.Port, router))
+}
+
+/*
+
+	//dataSaver := simpleStorage.NewStorage()
+
+	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/", isConnectionGood.New()).Methods("GET")
+	//router.HandleFunc("/data", getData.New(dataSaver)).Methods("POST")
 	//router.HandleFunc("/metrics", exportMetrics.New(dataBuffer)).Methods("GET")
 	router.HandleFunc("/time", getTime.New()).Methods("Get")
 
 	//TODO: make normal log
 	log.Println("Start Listening...")
 	log.Fatal(http.ListenAndServe(conf.Host+":"+conf.Port, router))
-}
+
+*/

@@ -8,8 +8,9 @@ import (
 )
 
 type Config struct {
-	Host string `json:"host"`
-	Port string `json:"port"`
+	Host                 string `json:"host"`
+	Port                 string `json:"port"`
+	BD_connect_parametrs string `json:"BD_URL"`
 }
 
 func MustRead(path string) Config {

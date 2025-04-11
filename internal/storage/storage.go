@@ -1,19 +1,14 @@
 package storage
 
-type Storage interface {
-	SaveTemperature(ID, Purpose, SensorPinNumber, Timestamp string, data float64) error
-	GetTempreature(ID, Purpose, SensorPinNumber, data string) string
+type Data_unit struct {
+	ID              string  `json:"ID"`
+	SensorPinNumber int     `json:"sID"`
+	Timestamp       string  `json:"dt"`
+	Data            float64 `json:"d"`
+	//	Purpose         string убрать также с ESP32 эта инфа будет в другой таблице в бд
 }
 
-// type ObjectData struct {
-// 	Timestamp        string
-// 	RefrigeratorPath string
-// 	Tempreature      float64
-// }
-// func NewObjectData(timestamp, refrigeratorPath string, temp float64) ObjectData {
-// 	return ObjectData{
-// 		Timestamp:        timestamp,
-// 		RefrigeratorPath: refrigeratorPath,
-// 		Tempreature:      temp,
-// 	}
-// }
+type Storage interface {
+	AddNewData(readings []Data_unit) error
+	GetDataFromDay(ID string, sensor_ID, day, month, year int) error
+}

@@ -37,7 +37,7 @@ func (s SimpleStorage) SaveData(ID, Purpose, SensorPinNumber, Timestamp string, 
 	}
 	defer file.Close()
 
-	_, err = file.WriteString(fmt.Sprintf("%s:%s:%s %f", splitedTimestamp[3], splitedTimestamp[4], splitedTimestamp[5], data))
+	_, err = file.WriteString(fmt.Sprintf("%s:%s:%s %f\n", splitedTimestamp[3], splitedTimestamp[4], splitedTimestamp[5], data))
 	if err != nil {
 		return e.WrapIfErr("can not write to data file", err)
 	}
