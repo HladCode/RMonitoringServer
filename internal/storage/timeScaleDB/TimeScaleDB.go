@@ -101,16 +101,8 @@ func (db *Database) AddNewData(readings []storage.Data_unit) error {
 }
 
 func (db *Database) GetDataFromDay(ID string, sensor_ID, day, month, year int) (string, error) {
-	// SELECT timestamp, value FROM get_sensor_data_for_day($1, $2, $3);
-
-	rows, err := db.pool.Query(db.cntxt, `SELECT timestamp, value
-    FROM sensor_readings
-    WHERE device_id = $1
-      AND sensor_index = $2
-      AND timestamp >= $3
-      AND timestamp < $3 + INTERVAL '1 day'
-    ORDER BY timestamp;`,
-		ID, sensor_ID, fmt.Sprintf("%d-%d-%dT00:00:00Z", year, month, day))
+	rows, err := db.pool.Query(db.cntxt, `SELECT timestamp, value FROM get_sensor_data_for_day($1, $2, $3);`,
+		ID, sensor_ID, fmt.Sprintf("%d-%d-%dT00:00:00+03:00", year, month, day))
 	if err != nil {
 		return "", e.Wrap("Can not get day data", err)
 	}
@@ -126,7 +118,7 @@ func (db *Database) GetDataFromDay(ID string, sensor_ID, day, month, year int) (
 			return "", e.Wrap("failed to scan row", err)
 		}
 
-		data[timestamp.Format(time.RFC3339)] = value // TODO: 2025-04-11T04:50:00+03:00 мб пофиксишь эту хуйню и на есп32 надо там поебаться с доставкой данных
+		data[timestamp.Format(time.RFC3339)] = value // TODO: на esp32 при передачи данных указывай в таймштампе UTC+3
 	}
 
 	if err := rows.Err(); err != nil {
