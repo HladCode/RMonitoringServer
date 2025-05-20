@@ -46,6 +46,19 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS users_companies (
+    user_id INT UNIQUE NOT NULL,
+    company_name TEXT UNIQUE NOT NULL, -- сначало надо зарегаться и добавить в users, а уже после проверки админов добавлять
+    is_Admin Boolean NOT NULL,
+     -- админ сможет добавлять челов в компанию, админов назначает либо другой админ, либо разработчик/техподдержка
+)
+
+CREATE TABLE IF NOT EXISTS devices_place_companies (
+    device_id TEXT UNIQUE NOT NULL,
+    place TEXT NOT NULL, -- это где установлено устройство, к примеру "Ukraine/Cherkassy/Fayno1"
+    company_name TEXT UNIQUE NOT NULL,
+)
+
 CREATE OR REPLACE FUNCTION get_sensor_data_for_day(
     p_device_id TEXT,
     p_sensor_index INT,

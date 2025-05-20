@@ -5,7 +5,13 @@ type Data_unit struct {
 	SensorPinNumber int     `json:"sID"`
 	Timestamp       string  `json:"dt"`
 	Data            float64 `json:"d"`
-	//	Purpose         string убрать также с ESP32 эта инфа будет в другой таблице в бд
+}
+
+type User_data struct {
+	User_name       string
+	Email           string
+	Hashed_password string
+	ID              int
 }
 
 type Storage interface {

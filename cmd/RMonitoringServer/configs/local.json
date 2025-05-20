@@ -1,5 +1,6 @@
 {
     "host": "0.0.0.0",
     "port": "1488",
-    "BD_URL": "postgresql://postgres:password@localhost:5432/sensor_data?sslmode=disable"
+    "BD_URL": "postgresql://postgres:password@localhost:5432/sensor_data?sslmode=disable",
+    "KeyJWT": "password"
 }

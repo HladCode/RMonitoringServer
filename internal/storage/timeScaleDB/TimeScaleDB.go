@@ -10,6 +10,7 @@ import (
 
 	"github.com/HladCode/RMonitoringServer/internal/lib/e"
 	"github.com/HladCode/RMonitoringServer/internal/storage"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -131,4 +132,48 @@ func (db *Database) GetDataFromDay(ID string, sensor_ID, day, month, year int) (
 	}
 
 	return string(jsonData), nil
+}
+
+func (db *Database) AddUser(username, email, password string) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return e.Wrap("can not hash password", err)
+	}
+
+	_, err = db.pool.Exec(db.cntxt, `INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)`,
+		username, email, hashedPassword)
+	if err != nil {
+		return e.Wrap("Can not add data", err)
+	}
+
+	return nil
+}
+
+func (db *Database) GetUser(username string) (storage.User_data, error) {
+	user_data := storage.User_data{
+		User_name: username,
+	}
+	rows, err := db.pool.Query(db.cntxt, `SELECT id, email, password_hash FROM get_sensor_data_for_day WHERE username = ?;`,
+		username)
+	if err != nil {
+		return storage.User_data{}, e.Wrap("Can not add data", err)
+	}
+
+	defer rows.Close()
+
+	if err := rows.Scan(&user_data.ID, &user_data.Email, &user_data.Hashed_password); err != nil {
+		return storage.User_data{}, e.Wrap("failed to scan row", err)
+	}
+
+	return user_data, nil
+}
+
+func (db *Database) SaveRefreshToken(hashed_token string, user_id int) error {
+	_, err := db.pool.Exec(db.cntxt, `INSERT INTO users (token, user_id, expires_at) VALUES (?, ?, ?)`,
+		hashed_token, user_id, time.Now().Add(24*time.Hour).Format(time.RFC3339))
+	if err != nil {
+		return e.Wrap("Can not add refresh token", err)
+	}
+
+	return nil
 }

@@ -4,13 +4,18 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/HladCode/RMonitoringServer/internal/config"
-	_ "github.com/HladCode/RMonitoringServer/internal/http-server/handlers/getData_old" // getData
-	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/getTime"
-	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/isConnectionGood"
-	receivedata "github.com/HladCode/RMonitoringServer/internal/http-server/handlers/receiveData"
-	senddatafromday "github.com/HladCode/RMonitoringServer/internal/http-server/handlers/sendDataFromDay"
+	_ "github.com/HladCode/RMonitoringServer/internal/http-server/handlers/monitoring_device_handlers/getData_old" // getData
+	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/monitoring_device_handlers/getTime"
+	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/monitoring_device_handlers/isConnectionGood"
+	receivedata "github.com/HladCode/RMonitoringServer/internal/http-server/handlers/monitoring_device_handlers/receiveData"
+	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/user_handlers/login"
+	"github.com/HladCode/RMonitoringServer/internal/http-server/handlers/user_handlers/register"
+	sendDataFromDay "github.com/HladCode/RMonitoringServer/internal/http-server/handlers/user_handlers/sendDataFromDay"
+	api_jwt "github.com/HladCode/RMonitoringServer/internal/lib/api/jwt"
+	"github.com/HladCode/RMonitoringServer/internal/middleware"
 	DB "github.com/HladCode/RMonitoringServer/internal/storage/timeScaleDB"
 
 	"github.com/gorilla/mux"
@@ -36,6 +41,7 @@ func main() {
 	}
 
 	conf := config.MustRead(*ConfigPath)
+	api_jwt.SetSecretKey(conf.KeyJWT)
 
 	db, err := DB.NewDatabase(conf.BD_connect_parametrs)
 	if err != nil {
@@ -47,10 +53,17 @@ func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", isConnectionGood.New()).Methods("GET")
-	router.HandleFunc("/getDayData", senddatafromday.New(db)).Methods("Get")
+
+	user := router.PathPrefix("/user").Subrouter()
+	user.HandleFunc("/getDayData", sendDataFromDay.New(db)).Methods("Get")
+
+	user_authentication := router.PathPrefix("/auth").Subrouter()
+	user_authentication.Use(middleware.AuthenticationRateLimiter(10, 35*time.Minute))
+	user_authentication.HandleFunc("/register", register.New(db)).Methods("Get")
+	user_authentication.HandleFunc("/login", login.New(db)).Methods("Get")
 
 	api := router.PathPrefix("/api").Subrouter()
-
+	api.Use(middleware.JWTMiddleware)
 	api.HandleFunc("/time", getTime.New()).Methods("Get")
 	api.HandleFunc("/sendData", receivedata.New(db)).Methods("POST")
 
