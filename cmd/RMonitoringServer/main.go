@@ -47,9 +47,12 @@ func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", isConnectionGood.New()).Methods("GET")
-	router.HandleFunc("/time", getTime.New()).Methods("Get")
-	router.HandleFunc("/sendData", receivedata.New(db)).Methods("POST")
 	router.HandleFunc("/getDayData", senddatafromday.New(db)).Methods("Get")
+
+	api := router.PathPrefix("/api").Subrouter()
+
+	api.HandleFunc("/time", getTime.New()).Methods("Get")
+	api.HandleFunc("/sendData", receivedata.New(db)).Methods("POST")
 
 	//TODO: make normal log
 	log.Println("Start Listening...")

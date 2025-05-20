@@ -32,7 +32,7 @@ func New(saver DataSaver) http.HandlerFunc {
 		var dat Request
 		err = json.Unmarshal(reqBody, &dat)
 		if err != nil {
-			log.Print("Marshaling has been failed", "\n", reqBody, "\n")
+			log.Print("Marshaling has been failed", "\n")
 			fmt.Fprintf(w, "Error")
 			return
 		}

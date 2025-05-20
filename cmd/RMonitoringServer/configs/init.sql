@@ -29,13 +29,29 @@
 --
 -- TODO: в методі бд Init створити перевірку на наявність таблиць, якщо вони відстутні,
 -- що буде означати, що запитів зверху не було, то виконати код зверху!! 
---
+
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+    id SERIAL PRIMARY KEY,
+    token TEXT UNIQUE,
+    user_id INT,
+    expires_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 CREATE OR REPLACE FUNCTION get_sensor_data_for_day(
     p_device_id TEXT,
     p_sensor_index INT,
     p_date DATE
 )
+
 RETURNS TABLE (
     "timestamp" TIMESTAMPTZ,
     value DOUBLE PRECISION
