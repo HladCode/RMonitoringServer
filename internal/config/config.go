@@ -12,6 +12,7 @@ type Config struct {
 	Port                 string `json:"port"`
 	BD_connect_parametrs string `json:"BD_URL"`
 	KeyJWT               string `json:"KeyJWT"`
+	SQLFILEPATH          string `json:"SQLFilePath"`
 }
 
 func MustRead(path string) Config {

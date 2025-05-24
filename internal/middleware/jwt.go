@@ -28,11 +28,9 @@ func JWTMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		// Пример: извлечь user_id
 		if claims, ok := token.Claims.(jwt.MapClaims); ok {
 			userID := int(claims["user_id"].(float64))
 			fmt.Println("UserID =", userID)
-			// Можно сохранить в context и передать дальше
 		}
 
 		next.ServeHTTP(w, r)

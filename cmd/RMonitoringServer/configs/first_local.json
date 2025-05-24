@@ -3,5 +3,5 @@
     "port": "1488",
     "BD_URL": "postgresql://postgres:password@localhost:5432/sensor_data?sslmode=disable",
     "KeyJWT": "password",
-    "SQLFilePath": "configs/init.sql"
+    "SQLFilePath": "configs/fullinit.sql"
 }

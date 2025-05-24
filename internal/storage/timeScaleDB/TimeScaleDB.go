@@ -10,7 +10,6 @@ import (
 
 	"github.com/HladCode/RMonitoringServer/internal/lib/e"
 	"github.com/HladCode/RMonitoringServer/internal/storage"
-	"golang.org/x/crypto/bcrypt"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -51,35 +50,6 @@ func (db *Database) InitFromFile(path string) error {
 	return nil
 }
 
-/*
-
-CREATE DATABASE sensor_data;
-\c sensor_data
-
-CREATE EXTENSION IF NOT EXISTS timescaledb;
-
-CREATE TABLE sensor_readings (
-    timestamp         TIMESTAMPTZ       NOT NULL,
-    device_id         TEXT              NOT NULL,
-    sensor_index      INTEGER           NOT NULL,
-    -- measurement_type  TEXT              NOT NULL,
-    value             DOUBLE PRECISION  NOT NULL
-);
-
-CREATE TABLE sensor_index_meaning (
-    device_id         TEXT              NOT NULL,
-    sensor_index      INTEGER           NOT NULL,
-    measurement_type  TEXT              NOT NULL,
-    meaning           TEXT              NOT NULL  -- щоб розуміти що саме вимірює той чи інший датчик з певним індексом
-);
-
-SELECT create_hypertable('sensor_readings', 'time');
-
-CREATE INDEX idx_device_id ON sensor_readings (device_id);
-CREATE INDEX idx_sensor_index ON sensor_readings (sensor_index);
-
-*/
-
 func (db *Database) AddNewData(readings []storage.Data_unit) error {
 	base := `INSERT INTO sensor_readings (timestamp, device_id, sensor_index, value) VALUES `
 	args := []interface{}{}
@@ -103,7 +73,7 @@ func (db *Database) AddNewData(readings []storage.Data_unit) error {
 
 func (db *Database) GetDataFromDay(ID string, sensor_ID, day, month, year int) (string, error) {
 	rows, err := db.pool.Query(db.cntxt, `SELECT timestamp, value FROM get_sensor_data_for_day($1, $2, $3);`,
-		ID, sensor_ID, fmt.Sprintf("%d-%d-%dT00:00:00+03:00", year, month, day))
+		ID, sensor_ID, fmt.Sprintf("%d-%d-%dT00:00:00+00:00", year, month, day))
 	if err != nil {
 		return "", e.Wrap("Can not get day data", err)
 	}
@@ -132,48 +102,4 @@ func (db *Database) GetDataFromDay(ID string, sensor_ID, day, month, year int) (
 	}
 
 	return string(jsonData), nil
-}
-
-func (db *Database) AddUser(username, email, password string) error {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return e.Wrap("can not hash password", err)
-	}
-
-	_, err = db.pool.Exec(db.cntxt, `INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)`,
-		username, email, hashedPassword)
-	if err != nil {
-		return e.Wrap("Can not add data", err)
-	}
-
-	return nil
-}
-
-func (db *Database) GetUser(username string) (storage.User_data, error) {
-	user_data := storage.User_data{
-		User_name: username,
-	}
-	rows, err := db.pool.Query(db.cntxt, `SELECT id, email, password_hash FROM get_sensor_data_for_day WHERE username = ?;`,
-		username)
-	if err != nil {
-		return storage.User_data{}, e.Wrap("Can not add data", err)
-	}
-
-	defer rows.Close()
-
-	if err := rows.Scan(&user_data.ID, &user_data.Email, &user_data.Hashed_password); err != nil {
-		return storage.User_data{}, e.Wrap("failed to scan row", err)
-	}
-
-	return user_data, nil
-}
-
-func (db *Database) SaveRefreshToken(hashed_token string, user_id int) error {
-	_, err := db.pool.Exec(db.cntxt, `INSERT INTO users (token, user_id, expires_at) VALUES (?, ?, ?)`,
-		hashed_token, user_id, time.Now().Add(24*time.Hour).Format(time.RFC3339))
-	if err != nil {
-		return e.Wrap("Can not add refresh token", err)
-	}
-
-	return nil
 }

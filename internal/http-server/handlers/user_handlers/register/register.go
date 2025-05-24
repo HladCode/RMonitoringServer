@@ -6,6 +6,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/HladCode/RMonitoringServer/internal/lib/e"
 )
 
 type UserAdder interface {
@@ -39,7 +41,7 @@ func New(adder UserAdder) http.HandlerFunc {
 		err = adder.AddUser(dat.Login, dat.Email, dat.Unhashed_password)
 		if err != nil {
 			log.Print("Error: can not add user", "\n")
-			fmt.Fprintf(w, "Error: can not add user")
+			fmt.Fprintf(w, e.Wrap("Error: can not add user", err).Error())
 			return
 		}
 	}
