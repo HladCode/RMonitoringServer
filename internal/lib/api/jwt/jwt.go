@@ -2,11 +2,11 @@ package jwt
 
 import (
 	"crypto/rand"
-	"crypto/sha256"
 	"encoding/base64"
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var jwtKey []byte
@@ -23,7 +23,7 @@ func GenerateJWT(userID int) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id": userID,
 		"role":    "user",
-		"exp":     time.Now().Add(15 * time.Minute).Unix(),
+		"exp":     time.Now().Add(15 * time.Minute).Unix(), // 15 * time.Minute
 		"iat":     time.Now().Unix(),
 	}
 
@@ -39,8 +39,11 @@ func GenerateRefreshToken() (rawToken string, hashedToken string, err error) {
 	}
 	rawToken = base64.URLEncoding.EncodeToString(bytes)
 
-	hash := sha256.Sum256([]byte(rawToken))
-	hashedToken = base64.URLEncoding.EncodeToString(hash[:])
+	hashedBytes, err := bcrypt.GenerateFromPassword([]byte(rawToken), bcrypt.DefaultCost)
+	if err != nil {
+		return "", "", err
+	}
+	hashedToken = string(hashedBytes)
 
 	return rawToken, hashedToken, nil
 }
