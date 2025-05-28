@@ -57,13 +57,13 @@ func main() {
 
 	user := router.PathPrefix("/user").Subrouter()
 	user.Use(middleware.JWTMiddleware)
-	user.HandleFunc("/getDayData", sendDataFromDay.New(db)).Methods("Get")
+	user.HandleFunc("/getDayData", sendDataFromDay.New(db)).Methods("Post")
 
 	user_authentication := router.PathPrefix("/auth").Subrouter()
 	user_authentication.Use(middleware.AuthenticationRateLimiter(10, 35*time.Minute))
-	user_authentication.HandleFunc("/register", register.New(db)).Methods("Get")
-	user_authentication.HandleFunc("/login", login.New(db)).Methods("Get")
-	user_authentication.HandleFunc("/refresh", refresh_jwt.New(db)).Methods("Get")
+	user_authentication.HandleFunc("/register", register.New(db)).Methods("Post")
+	user_authentication.HandleFunc("/login", login.New(db)).Methods("Post")
+	user_authentication.HandleFunc("/refresh", refresh_jwt.New(db)).Methods("Post")
 
 	api := router.PathPrefix("/api").Subrouter()
 	//api.Use() TODO: API TOKEN MIDDLEWARE
