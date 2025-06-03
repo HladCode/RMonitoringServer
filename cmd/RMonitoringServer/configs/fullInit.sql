@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS users_companies (
 CREATE TABLE IF NOT EXISTS devices_place_companies (
     device_id TEXT UNIQUE NOT NULL,
     place TEXT NOT NULL, -- это где установлено устройство, к примеру "Ukraine/Cherkassy/Fayno1"
-    company_name TEXT UNIQUE NOT NULL
+    company_name TEXT NOT NULL
 );
 
 CREATE OR REPLACE FUNCTION get_sensor_data_for_day(
