@@ -39,6 +39,8 @@ func New(getter SensorsGetter) http.HandlerFunc {
 			log.Println(err.Error())
 		}
 
+		log.Println(string(reqBody), resp)
+
 		fmt.Fprintf(w, resp)
 	}
 }

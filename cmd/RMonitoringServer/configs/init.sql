@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS users_companies (
     user_id INT UNIQUE NOT NULL,
-    company_name TEXT UNIQUE NOT NULL, -- сначало надо зарегаться и добавить в users, а уже после проверки админов добавлять
+    company_name TEXT NOT NULL, -- сначало надо зарегаться и добавить в users, а уже после проверки админов добавлять
     is_Admin Boolean NOT NULL
      -- админ сможет добавлять челов в компанию, админов назначает либо другой админ, либо разработчик/техподдержка
 );
