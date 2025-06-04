@@ -1,7 +1,6 @@
 package timescaledb
 
 import (
-	"log"
 	"time"
 
 	"github.com/HladCode/RMonitoringServer/internal/lib/e"
@@ -45,8 +44,6 @@ func (db *Database) IfRefreshTokenValid(unhashed_token string, user_id int) (boo
 			&refreshToken.Created_at); err != nil {
 			return false, e.Wrap("failed to scan row", err)
 		}
-
-		log.Println("worgjhi;lrwejghl")
 
 		if err = bcrypt.CompareHashAndPassword([]byte(refreshToken.Token), []byte(unhashed_token)); err == nil {
 			if refreshToken.Expires_at.After(time.Now()) {

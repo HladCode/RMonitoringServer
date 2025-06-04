@@ -22,6 +22,7 @@ func newAuthLimiter(limit int, interval time.Duration) *authLimiter {
 	}
 }
 
+// TODO: анулювати користувачів, які успішно залогінились чи оновили токен
 func (al *authLimiter) allow(ip string) bool {
 	al.mu.Lock()
 	defer al.mu.Unlock()

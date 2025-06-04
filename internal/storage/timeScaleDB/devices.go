@@ -83,7 +83,7 @@ func (db *Database) GetDevicesFromUserInJson(username string) (string, error) {
 	rows, err := db.pool.Query(db.cntxt, `SELECT  place,  array_agg(device_id) AS device_ids FROM devices_place_companies WHERE  company_name = $1 GROUP BY place`,
 		companyName)
 	if err != nil {
-		return "", e.Wrap("Can not get day data", err)
+		return "", e.Wrap("Can not get data", err)
 	}
 
 	defer rows.Close()
@@ -97,6 +97,39 @@ func (db *Database) GetDevicesFromUserInJson(username string) (string, error) {
 		}
 
 		devices[place] = device_ids
+	}
+
+	if err := rows.Err(); err != nil {
+		return "", e.Wrap("rows iteration error", err)
+	}
+
+	jsonData, err := json.Marshal(devices)
+	if err != nil {
+		return "", e.Wrap("failed to marshal data to JSON", err)
+	}
+
+	return string(jsonData), nil
+}
+
+func (db *Database) GetSensorsFromDeviceIdInJson(device_id string) (string, error) {
+	rows, err := db.pool.Query(db.cntxt, `SELECT  sensor_index,  measurement_type, meaning FROM sensor_index_meaning WHERE  device_id = $1`,
+		device_id)
+	if err != nil {
+		return "", e.Wrap("Can not get data", err)
+	}
+
+	defer rows.Close()
+
+	devices := make(map[int]string)
+	for rows.Next() {
+		var sensor_id int
+		var measurement_type string
+		var meaning string
+		if err := rows.Scan(&sensor_id, &measurement_type, &meaning); err != nil {
+			return "", e.Wrap("failed to scan row", err)
+		}
+
+		devices[sensor_id] = measurement_type + "\n" + meaning
 	}
 
 	if err := rows.Err(); err != nil {
