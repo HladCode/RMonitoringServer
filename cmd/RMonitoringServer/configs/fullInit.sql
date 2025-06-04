@@ -3,8 +3,8 @@
 -- що буде означати, що запитів зверху не було, то виконати код зверху!! 
 
 
-CREATE DATABASE sensor_data;
-\c sensor_data
+-- CREATE DATABASE sensor_data;
+-- \c sensor_data
 
 CREATE EXTENSION IF NOT EXISTS timescaledb;
 

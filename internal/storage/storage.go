@@ -14,6 +14,11 @@ type User_data struct {
 	ID              int
 }
 
+// type Device_company_data struct {
+// 	Device_id string `json:"device_id"`
+// 	Place     string `json:"place"`
+// }
+
 type Storage interface {
 	AddNewData(readings []Data_unit) error
 	GetDataFromDay(ID string, sensor_ID, day, month, year int) error
