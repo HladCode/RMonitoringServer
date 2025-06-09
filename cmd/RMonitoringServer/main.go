@@ -64,7 +64,7 @@ func main() {
 	user.HandleFunc("/getSensors", getSensors.New(db)).Methods("Post")
 
 	user_authentication := router.PathPrefix("/auth").Subrouter()
-	user_authentication.Use(middleware.AuthenticationRateLimiter(10, 35*time.Minute))
+	user_authentication.Use(middleware.AuthenticationRateLimiter(10, 5*time.Minute))
 	user_authentication.HandleFunc("/register", register.New(db)).Methods("Post")
 	user_authentication.HandleFunc("/login", login.New(db)).Methods("Post")
 	user_authentication.HandleFunc("/refresh", refresh_jwt.New(db)).Methods("Post")

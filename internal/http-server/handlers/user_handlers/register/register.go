@@ -44,5 +44,6 @@ func New(adder UserAdder) http.HandlerFunc {
 			fmt.Fprintf(w, e.Wrap("Error: can not add user", err).Error())
 			return
 		}
+		fmt.Fprintf(w, "200")
 	}
 }
