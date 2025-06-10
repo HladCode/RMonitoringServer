@@ -31,9 +31,9 @@ func (db *Database) AddNewData(readings []storage.Data_unit) error {
 	return nil
 }
 
-func (db *Database) GetDataFromDay(ID string, sensor_ID, day, month, year int) (string, error) {
-	rows, err := db.pool.Query(db.cntxt, `SELECT timestamp, value FROM get_sensor_data_for_day($1, $2, $3);`,
-		ID, sensor_ID, fmt.Sprintf("%d-%d-%dT00:00:00+00:00", year, month, day))
+func (db *Database) GetDataFromDay(ID string, sensor_ID int, fromDateTime, toDateTime string) (string, error) {
+	rows, err := db.pool.Query(db.cntxt, `SELECT timestamp, value FROM get_sensor_data_for_day($1, $2, $3, $4);`,
+		ID, sensor_ID, fromDateTime, toDateTime) //fmt.Sprintf("%d-%d-%dT00:00:00+00:00", year, month, day)
 	if err != nil {
 		return "", e.Wrap("Can not get day data", err)
 	}

@@ -9,15 +9,14 @@ import (
 )
 
 type DataGetter interface {
-	GetDataFromDay(ID string, sensor_ID, day, month, year int) (string, error)
+	GetDataFromDay(ID string, sensor_ID int, fromDateTime, ToDateTime string) (string, error)
 }
 
 type Request struct {
-	ID        string `json:"ID"`
-	Sensor_ID int    `json:"sensor_ID"`
-	Day       int    `json:"day"`
-	Month     int    `json:"month"`
-	Year      int    `json:"year"`
+	ID           string `json:"ID"`
+	Sensor_ID    int    `json:"sensor_ID"`
+	FromDateTime string `json:"from"`
+	ToDateTime   string `json:"to"`
 }
 
 func New(getter DataGetter) http.HandlerFunc {
@@ -40,7 +39,7 @@ func New(getter DataGetter) http.HandlerFunc {
 			return
 		}
 
-		resp, err := getter.GetDataFromDay(dat.ID, dat.Sensor_ID, dat.Day, dat.Month, dat.Year)
+		resp, err := getter.GetDataFromDay(dat.ID, dat.Sensor_ID, dat.FromDateTime, dat.ToDateTime)
 		if err != nil {
 			log.Println(err.Error())
 		}

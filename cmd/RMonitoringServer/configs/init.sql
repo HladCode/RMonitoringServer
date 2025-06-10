@@ -62,7 +62,8 @@ CREATE TABLE IF NOT EXISTS devices_place_companies (
 CREATE OR REPLACE FUNCTION get_sensor_data_for_day(
     p_device_id TEXT,
     p_sensor_index INT,
-    p_date DATE
+    p_from_date TIMESTAMPTZ,
+    p_to_date TIMESTAMPTZ
 )
 RETURNS TABLE (
     "timestamp" TIMESTAMPTZ,
@@ -74,8 +75,8 @@ BEGIN
     FROM sensor_readings
     WHERE device_id = p_device_id
       AND sensor_index = p_sensor_index
-      AND sensor_readings."timestamp" >= p_date
-      AND sensor_readings."timestamp" < p_date + INTERVAL '1 day'
+      AND sensor_readings."timestamp" >= p_from_date
+      AND sensor_readings."timestamp" <= p_to_date
     ORDER BY sensor_readings."timestamp";
 END;
 $$ LANGUAGE plpgsql;

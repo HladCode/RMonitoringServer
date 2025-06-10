@@ -59,7 +59,7 @@ func main() {
 
 	user := router.PathPrefix("/user").Subrouter()
 	user.Use(middleware.JWTMiddleware)
-	user.HandleFunc("/getDayData", sendDataFromDay.New(db)).Methods("Post")
+	user.HandleFunc("/getDataInInterval", sendDataFromDay.New(db)).Methods("Post")
 	user.HandleFunc("/getDevices", getdevices.New(db)).Methods("Post")
 	user.HandleFunc("/getSensors", getSensors.New(db)).Methods("Post")
 
