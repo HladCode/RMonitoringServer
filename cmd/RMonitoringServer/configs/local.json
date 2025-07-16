@@ -1,7 +1,7 @@
 {
     "host": "0.0.0.0",
     "port": "1488",
-    "BD_URL": "postgresql://postgres:password@localhost:5432/sensor_data?sslmode=disable",
+    "BD_URL": "postgresql://postgres:09bhP18a@0.0.0.0:5432/rmonitoring_data?sslmode=disable",
     "KeyJWT": "password",
     "SQLFilePath": "configs/init.sql"
 }

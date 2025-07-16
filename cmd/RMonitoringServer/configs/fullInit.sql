@@ -27,6 +27,7 @@ SELECT create_hypertable('sensor_readings', 'timestamp');
 
 CREATE INDEX idx_device_id ON sensor_readings (device_id);
 CREATE INDEX idx_sensor_index ON sensor_readings (sensor_index);
+--CREATE INDEX idx_timestamp_id ON sensor_readings (timestamp);
 --CREATE INDEX idx_measurement_type ON sensor_readings (measurement_type);
 
 CREATE TABLE IF NOT EXISTS refresh_tokens (

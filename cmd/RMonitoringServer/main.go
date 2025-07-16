@@ -55,6 +55,14 @@ func main() {
 	}
 
 	router := mux.NewRouter().StrictSlash(true)
+
+	fs := http.FileServer(http.Dir("web/static"))
+	router.PathPrefix("/web/").Handler(http.StripPrefix("/web/", fs))
+
+	router.HandleFunc("/web", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/web/", http.StatusMovedPermanently)
+	})
+
 	router.HandleFunc("/", isConnectionGood.New()).Methods("GET")
 
 	user := router.PathPrefix("/user").Subrouter()
@@ -69,10 +77,10 @@ func main() {
 	user_authentication.HandleFunc("/login", login.New(db)).Methods("Post")
 	user_authentication.HandleFunc("/refresh", refresh_jwt.New(db)).Methods("Post")
 
-	api := router.PathPrefix("/api").Subrouter()
+	//api := router.PathPrefix("/api").Subrouter()
 	//api.Use() TODO: API TOKEN MIDDLEWARE
-	api.HandleFunc("/time", getTime.New()).Methods("Get")
-	api.HandleFunc("/sendData", receivedata.New(db)).Methods("POST")
+	router.HandleFunc("/time", getTime.New()).Methods("Get")
+	router.HandleFunc("/sendData", receivedata.New(db)).Methods("Post")
 
 	//TODO: make normal log
 	log.Println("Start Listening...")
