@@ -19,7 +19,7 @@ import (
 	sendDataFromDay "github.com/HladCode/RMonitoringServer/internal/http-server/handlers/user_handlers/sendDataFromDay"
 	api_jwt "github.com/HladCode/RMonitoringServer/internal/lib/api/jwt"
 	"github.com/HladCode/RMonitoringServer/internal/middleware"
-	DB "github.com/HladCode/RMonitoringServer/internal/storage/timeScaleDB"
+	DB "github.com/HladCode/RMonitoringServer/storage/timeScaleDB"
 
 	"github.com/gorilla/mux"
 )
