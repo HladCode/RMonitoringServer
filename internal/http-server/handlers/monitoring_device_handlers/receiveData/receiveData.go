@@ -8,7 +8,7 @@ import (
 	"net/http"
 
 	re "github.com/HladCode/RMonitoringServer/internal/lib/api/response"
-	"github.com/HladCode/RMonitoringServer/internal/storage"
+	"github.com/HladCode/RMonitoringServer/storage"
 )
 
 type DataSaver interface {

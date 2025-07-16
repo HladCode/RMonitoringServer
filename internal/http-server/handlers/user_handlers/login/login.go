@@ -9,7 +9,7 @@ import (
 
 	api_jwt "github.com/HladCode/RMonitoringServer/internal/lib/api/jwt"
 	"github.com/HladCode/RMonitoringServer/internal/lib/e"
-	"github.com/HladCode/RMonitoringServer/internal/storage"
+	"github.com/HladCode/RMonitoringServer/storage"
 	"golang.org/x/crypto/bcrypt"
 )
 

@@ -2,7 +2,7 @@ package timescaledb
 
 import (
 	"github.com/HladCode/RMonitoringServer/internal/lib/e"
-	"github.com/HladCode/RMonitoringServer/internal/storage"
+	"github.com/HladCode/RMonitoringServer/storage"
 	"golang.org/x/crypto/bcrypt"
 )
 

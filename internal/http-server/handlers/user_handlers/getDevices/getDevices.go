@@ -6,6 +6,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/HladCode/RMonitoringServer/internal/lib/e"
 )
 
 type DeviceGetter interface {
@@ -39,6 +41,8 @@ func New(getter DeviceGetter) http.HandlerFunc {
 		resp, err := getter.GetDevicesFromUserInJson(dat.Username)
 		if err != nil {
 			log.Println(err.Error())
+			fmt.Fprintf(w, e.Wrap("Error: ", err).Error())
+			return
 		}
 
 		fmt.Fprintf(w, resp)

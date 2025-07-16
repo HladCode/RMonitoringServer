@@ -2,7 +2,6 @@ package timescaledb
 
 import (
 	"context"
-	"os"
 
 	"github.com/HladCode/RMonitoringServer/internal/lib/e"
 
@@ -32,15 +31,18 @@ func NewDatabase(connStr string) (*Database, error) {
 func (db *Database) InitFromFile(path string) error {
 	// TODO просто сделать проверку на наличие таблиц,
 	// а то некоторые запросы плохо исполняются по много раз
-	content, err := os.ReadFile(path)
-	if err != nil {
-		return e.Wrap("Can not read file", err)
-	}
 
-	_, err = db.pool.Exec(db.cntxt, string(content))
-	if err != nil {
-		return e.Wrap("Exec schema error", err)
-	}
+	// content, err := os.ReadFile(path)
+	// if err != nil {
+	// 	return e.Wrap("Can not read file", err)
+	// }
+
+	// _, err = db.pool.Exec(db.cntxt, string(content))
+	// if err != nil {
+	// 	return e.Wrap("Exec schema error", err)
+	// }
+
+	// хз все можно сделать в бобре
 
 	return nil
 }

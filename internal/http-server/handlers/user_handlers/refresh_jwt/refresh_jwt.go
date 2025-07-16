@@ -17,8 +17,8 @@ type refresherTokenValidator interface {
 }
 
 type Request struct {
-	Username      string `json:"username"`
-	UnhashedToken string `json:"token"`
+	Username      string `json:"Login"`
+	UnhashedToken string `json:"Token"`
 }
 
 func New(refresher refresherTokenValidator) http.HandlerFunc {

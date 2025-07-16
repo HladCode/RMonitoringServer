@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/HladCode/RMonitoringServer/internal/lib/e"
-	"github.com/HladCode/RMonitoringServer/internal/storage"
+	"github.com/HladCode/RMonitoringServer/storage"
 )
 
 func (db *Database) AddNewData(readings []storage.Data_unit) error {

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>RMonitoring</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://www.gstatic.com/charts/loader.js" defer></script>
+  <script src="script_auth.js" defer></script>
+</head>
+<body>
+  <header>
+    <h3>Refrigerator Monitoring</h3>
+    <h5>Hlad Service IT Department</h5>
+    <nav class="navbar">
+      <a href="index.html" class="nav-link" data-target="mainPage">Головна</a>
+      <a href="#" class="nav-link" data-target="authPage" style="background-color: white; color: #333;">Авторизація</a>
+    </nav>
+  </header>
+
+  <section>
+    <h2>🔐 Авторизація</h2>
+    <input type="text" id="loginName" placeholder="Логін">
+    <input type="password" id="loginPass" placeholder="Пароль">
+    <button id="loginBtn">🔑 Увійти</button>
+  </section>
+
+  <section>
+    <h2>📝 Реєстрація</h2>
+    <input type="text" id="regName" placeholder="Логін">
+    <input type="email" id="regEmail" placeholder="Email">
+    <input type="password" id="regPass" placeholder="Пароль">
+    <input type="password" id="regConfirm" placeholder="Підтвердити пароль">
+    <button id="registerBtn">🆕 Зареєструватися</button>
+  </section>
+</body>
+</html>
